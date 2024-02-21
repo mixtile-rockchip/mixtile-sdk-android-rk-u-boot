@@ -1,0 +1,24 @@
+/*
+ * SPDX-License-Identifier:     GPL-2.0+
+ *
+ * (C) Copyright 2020 Rockchip Electronics Co., Ltd
+ */
+
+/dts-v1/;
+#include "rk3568.dtsi"
+#include "rk3568-u-boot.dtsi"
+#include <dt-bindings/input/input.h>
+
+/ {
+	model = "Mixtile Edge 2";
+	compatible = "focalcrest,mixtile-edge2", "rockchip,rk3568";
+};
+
+
+&crypto {
+        status = "okay";
+};
+
+&uart2 {
+	status = "okay";
+};
