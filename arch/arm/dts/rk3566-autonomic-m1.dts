@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (c) 2022 Mixtile Limited
+ *
+ */
+
+/dts-v1/;
+#include "rk3568.dtsi"
+#include "rk3568-u-boot.dtsi"
+#include <dt-bindings/input/input.h>
+
+/ {
+	model = "Autonomic M1";
+	compatible = "autonomic,m1", "rockchip,rk3566";
+};
