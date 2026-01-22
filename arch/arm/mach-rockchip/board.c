@@ -488,6 +488,11 @@ int board_late_init(void)
 #ifdef CONFIG_ROCKCHIP_SET_SN
 	rockchip_set_serialno();
 #endif
+#ifdef CONFIG_DRM_ROCKCHIP
+	if ((rockchip_get_boot_mode() != BOOT_MODE_QUIESCENT) &&
+	     !smp_event1(SEVT_3, STID_16))
+		rockchip_show_logo();
+#endif
 	setup_download_mode();
 #ifdef CONFIG_ROCKCHIP_USB_BOOT
 	boot_from_udisk();
@@ -500,11 +505,7 @@ int board_late_init(void)
 	rk_minidump_init();
 #endif
 
-#ifdef CONFIG_DRM_ROCKCHIP
-	if ((rockchip_get_boot_mode() != BOOT_MODE_QUIESCENT) &&
-	     !smp_event1(SEVT_3, STID_16))
-		rockchip_show_logo();
-#endif
+
 
 #ifdef CONFIG_ROCKCHIP_EBOOK_DISPLAY
 	rockchip_ebook_show_uboot_logo();
