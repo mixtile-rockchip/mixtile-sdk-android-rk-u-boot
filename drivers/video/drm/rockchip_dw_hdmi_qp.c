@@ -169,6 +169,7 @@ struct rockchip_hdmi {
 	bool force_disable_dsc;
 	u32 bus_width;
 	u32 sda_falling_delay_ns;
+	u32 hpd_trigger_level;
 	struct drm_hdmi_dsc_cap dsc_cap;
 	struct dw_hdmi_link_config link_cfg;
 
@@ -1542,20 +1543,16 @@ static enum drm_connector_status rk3588_read_hpd(struct rockchip_hdmi *hdmi)
 {
 	u32 val;
 	int ret;
+	bool hpd_high;
 
 	val = readl(hdmi->grf + RK3588_GRF_SOC_STATUS1);
+	hpd_high = !hdmi->id ? !!(val & RK3588_HDMI0_LEVEL_INT) :
+			     !!(val & RK3588_HDMI1_LEVEL_INT);
 
-	if (!hdmi->id) {
-		if (val & RK3588_HDMI0_LEVEL_INT)
-			ret = connector_status_connected;
-		else
-			ret = connector_status_disconnected;
-	} else {
-		if (val & RK3588_HDMI1_LEVEL_INT)
-			ret = connector_status_connected;
-		else
-			ret = connector_status_disconnected;
-	}
+	if (!!hdmi->hpd_trigger_level == hpd_high)
+		ret = connector_status_connected;
+	else
+		ret = connector_status_disconnected;
 
 	return ret;
 }
@@ -1666,6 +1663,8 @@ static int rockchip_dw_hdmi_qp_probe(struct udevice *dev)
 
 	hdmi->sda_falling_delay_ns =
 		ofnode_read_u32_default(hdmi_node, "rockchip,sda-falling-delay-ns", 0);
+	hdmi->hpd_trigger_level =
+		ofnode_read_u32_default(hdmi_node, "hpd-trigger-level", 1);
 
 	ret = gpio_request_by_name(dev, "enable-gpios", 0,
 				   &hdmi->enable_gpio, GPIOD_IS_OUT);
